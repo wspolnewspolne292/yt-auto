@@ -3,5 +3,6 @@ Flask>=2.0.0
 openai>=1.0.0
 elevenlabs>=0.2.27
 imageio>=2.37.0
+ffmpeg-python>=0.2.0
 gunicorn
 
