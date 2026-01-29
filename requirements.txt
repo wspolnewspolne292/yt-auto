@@ -1,10 +1,4 @@
 # Główne zależności projektu
-openai>=1.0.0
-requests>=2.31.0
-elevenlabs>=0.2.27
-moviepy>=1.0.3
-google-auth>=2.23.0
-google-api-python-client>=2.100.0
-python-dotenv>=1.0.0
-Flask
+Flask>=2.0.0
+gunicorn
 
