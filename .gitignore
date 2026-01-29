@@ -1,0 +1,28 @@
+# Ignoruj pliki konfiguracyjne, cache, tokeny i dane wrażliwe
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.env.*
+token.pickle
+client_secrets.json
+.idea/
+.vscode/
+.DS_Store
+*.log
+*.sqlite3
+*.db
+# Ignoruj pliki wideo i audio wynikowe
+*.mp4
+*.wav
+*.mp3
+*.mov
+*.avi
+*.webm
+*.ogg
+*.mkv
+# Ignoruj pliki tymczasowe
+*.tmp
+*.bak
+*.swp
