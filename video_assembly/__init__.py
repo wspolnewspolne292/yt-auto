@@ -8,10 +8,10 @@ def assemble_video(video_path: str, audio_path: str, output_path: str = "final_s
     Zwraca ścieżkę do finalnego pliku shortsa.
     """
     try:
-        # Łączymy obraz i dźwięk w jednym wywołaniu
+        # Poprawne łączenie obrazu i dźwięku
         (
             ffmpeg
-            .input(video_path)
+            .input(video_path, stream_loop=-1)
             .input(audio_path)
             .output(output_path, vcodec='libx264', acodec='aac', strict='experimental', shortest=None)
             .overwrite_output()

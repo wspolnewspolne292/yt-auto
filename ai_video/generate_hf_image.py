@@ -1,8 +1,8 @@
 import requests
 import base64
 
-# API endpoint HuggingFace Spaces (stabilityai/stable-diffusion)
-API_URL = "https://stabilityai-stable-diffusion.hf.space/run/predict"
+# Oficjalny endpoint HuggingFace Inference API (stabilityai/stable-diffusion-2-1)
+API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-1"
 
 def generate_image(prompt, output_path="output.png"):
     payload = {
