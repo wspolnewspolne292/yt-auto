@@ -7,7 +7,7 @@ import pickle
 
 SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
 
-def upload_to_youtube(video_path: str, script: str, title: str = "Viral Shorts AI", description: str = "Automatycznie wygenerowany shorts AI", tags=None):
+def upload_to_youtube(video_path: str, script: str, title: str = "Viral Shorts AI", description: str = "Automatycznie wygenerowany shorts AI", tags=None, code=None):
     """
     Publikuje shortsa na YouTube za pomocą YouTube Data API v3.
     Wymaga pliku client_secrets.json (Google Cloud OAuth 2.0) w katalogu projektu.
@@ -25,11 +25,12 @@ def upload_to_youtube(video_path: str, script: str, title: str = "Viral Shorts A
                 "client_secrets.json", SCOPES)
             # Tryb ręczny: wyświetl link do autoryzacji i poproś o kod
             auth_url, _ = flow.authorization_url(prompt='consent')
-            print("[INFO] Skopiuj ten link, otwórz w nowej karcie, zaloguj się do Google i wklej kod autoryzacji poniżej:")
-            print(auth_url)
-            code = input("Wklej kod autoryzacji Google: ")
-            flow.fetch_token(code=code)
-            creds = flow.credentials
+            if code is None:
+                # Zwróć link do autoryzacji i oczekuj kodu przez panel www (formularz)
+                raise Exception(f"GOOGLE_AUTH_REQUIRED::{auth_url}")
+            else:
+                flow.fetch_token(code=code)
+                creds = flow.credentials
         with open("token.pickle", "wb") as token:
             pickle.dump(creds, token)
 

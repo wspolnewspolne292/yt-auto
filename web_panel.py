@@ -125,6 +125,7 @@ HTML = '''
 def index():
     return render_template_string(HTML, result=None)
 
+
 @app.route('/generate', methods=['POST'])
 def generate():
     custom_script = request.form.get('custom_script', '').strip()
@@ -132,7 +133,25 @@ def generate():
     audio_path = generate_voiceover(script)
     video_path = generate_video(script)
     final_video = assemble_video(video_path, audio_path)
-    yt_status = upload_to_youtube(final_video, script)
+    try:
+        yt_status = upload_to_youtube(final_video, script)
+    except Exception as e:
+        if str(e).startswith("GOOGLE_AUTH_REQUIRED::"):
+            auth_url = str(e).split("::", 1)[1]
+            # Wyświetl formularz do wklejenia kodu autoryzacji
+            return f'''<h2>Autoryzacja Google</h2>
+            <p>1. Otwórz ten link w nowej karcie i zaloguj się do Google:<br><a href="{auth_url}" target="_blank">{auth_url}</a></p>
+            <form action="/auth-code" method="post">
+                <label>Wklej kod autoryzacji Google:</label><br>
+                <input name="auth_code" style="width:400px" required><br>
+                <input type="hidden" name="script" value="{script}">
+                <input type="hidden" name="audio_path" value="{audio_path}">
+                <input type="hidden" name="video_path" value="{video_path}">
+                <input type="hidden" name="final_video" value="{final_video}">
+                <button type="submit">Wyślij kod</button>
+            </form>'''
+        else:
+            return f"<h2>Błąd:</h2><pre>{e}</pre>"
     result = {
         'script': script,
         'audio': audio_path,
@@ -141,6 +160,29 @@ def generate():
         'yt': yt_status or 'OK'
     }
     return render_template_string(HTML, result=result)
+
+# Endpoint do przyjmowania kodu autoryzacji Google
+@app.route('/auth-code', methods=['POST'])
+def auth_code():
+    code = request.form.get('auth_code')
+    script = request.form.get('script')
+    audio_path = request.form.get('audio_path')
+    video_path = request.form.get('video_path')
+    final_video = request.form.get('final_video')
+    # Dokończ autoryzację Google i upload
+    from youtube_upload import upload_to_youtube
+    try:
+        yt_status = upload_to_youtube(final_video, script, code=code)
+        result = {
+            'script': script,
+            'audio': audio_path,
+            'video': video_path,
+            'final': final_video,
+            'yt': yt_status or 'OK'
+        }
+        return render_template_string(HTML, result=result)
+    except Exception as e:
+        return f"<h2>Błąd autoryzacji Google:</h2><pre>{e}</pre>"
 
 if __name__ == '__main__':
     app.run(debug=True)
