@@ -23,7 +23,8 @@ def upload_to_youtube(video_path: str, script: str, title: str = "Viral Shorts A
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
                 "client_secrets.json", SCOPES)
-            creds = flow.run_local_server(port=0)
+            # Użyj trybu konsolowego, aby działało w chmurze
+            creds = flow.run_console()
         with open("token.pickle", "wb") as token:
             pickle.dump(creds, token)
 
