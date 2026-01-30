@@ -23,9 +23,13 @@ def upload_to_youtube(video_path: str, script: str, title: str = "Viral Shorts A
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
                 "client_secrets.json", SCOPES)
-            # Użyj trybu lokalnego serwera z portem 0 (Render wyświetli link w logach)
-            print("[INFO] Skopiuj link z logów Render, otwórz w nowej karcie, zaloguj się do Google i wklej kod autoryzacji poniżej.")
-            creds = flow.run_local_server(port=0)
+            # Tryb ręczny: wyświetl link do autoryzacji i poproś o kod
+            auth_url, _ = flow.authorization_url(prompt='consent')
+            print("[INFO] Skopiuj ten link, otwórz w nowej karcie, zaloguj się do Google i wklej kod autoryzacji poniżej:")
+            print(auth_url)
+            code = input("Wklej kod autoryzacji Google: ")
+            flow.fetch_token(code=code)
+            creds = flow.credentials
         with open("token.pickle", "wb") as token:
             pickle.dump(creds, token)
 
